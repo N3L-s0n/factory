@@ -4,14 +4,20 @@ source "virtualbox-iso" "ubuntu-12" {
     iso_url = "http://releases.ubuntu.com/12.04/ubuntu-12.04.5-server-amd64.iso"
 
     http_content = {
-        "/preseed.cfg" = templatefile("${path.root}/ubuntu-12/preseed.pkrtpl.hcl", {})
+        "/preseed_2.cfg" = templatefile("${path.root}/ubuntu-12/preseed.pkrtpl.hcl", {})
     }
 
     boot_command = [
-        "<esc><esc><enter><wait>",
-        "/install/vmlinuz noapic ",
-        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
-        "initrd=/install/initrd.gz -- <enter>"
+        "<esc><wait>",
+        "<esc><wait>",
+        "<enter><wait>",
+        "/install/vmlinuz<wait>",
+        " initrd=/install/initrd.gz",
+        " auto-install/enable=true",
+        " debconf/priority=critical",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed_2.cfg<wait>",
+        " -- <wait>",
+        "<enter><wait>"
     ]
 
     iso_checksum = "md5:769474248a3897f4865817446f9a4a53"
@@ -20,4 +26,8 @@ source "virtualbox-iso" "ubuntu-12" {
     ssh_timeout = "10m"
 
     shutdown_command = "sudo -S shutdown -P now"
+
+    vboxmanage = [
+        ["modifyvm", "{{.Name}}", "--nat-localhostreachable1", "on"],
+    ]
 }
