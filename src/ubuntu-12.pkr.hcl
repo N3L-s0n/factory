@@ -21,11 +21,12 @@ source "virtualbox-iso" "ubuntu-12" {
     ]
 
     iso_checksum = "md5:769474248a3897f4865817446f9a4a53"
-    ssh_username = "packer"    
-    ssh_password = "packer"
-    ssh_timeout = "10m"
 
-    shutdown_command = "sudo -S shutdown -P now"
+    ssh_username = "packer"
+    ssh_password = "packer"
+    ssh_timeout = "60m"
+
+    shutdown_command = "echo 'packer' | sudo -S shutdown -P now"
 
     vboxmanage = [
         ["modifyvm", "{{.Name}}", "--nat-localhostreachable1", "on"],
