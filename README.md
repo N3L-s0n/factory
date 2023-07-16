@@ -9,11 +9,13 @@ List of images configured
 
 # Build
 To execute the builds then Packer must be installed
-Move to the src directory and execute the build passing a password variable to configure your images
+Move to the src directory and execute the build passing a password variable to configure your images.
+
+> Note: Change the value of `${variable}` with your own values
 
 ```sh
 cd src
-packer build -var 'password=${your_password} .
+packer build -var 'password=${your_password}' .
 ```
 
 # Authors
