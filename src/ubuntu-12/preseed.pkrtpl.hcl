@@ -57,16 +57,16 @@ d-i base-installer/kernel/image string linux-generic
 
 # Configure root
 d-i passwd/root-login boolean true
-d-i passwd/root-password password packer
-d-i passwd/root-password-again password packer
+d-i passwd/root-password password ${password}
+d-i passwd/root-password-again password ${password}
 
 # Set user password
 d-i passwd/user-fullname string packer
 d-i passwd/username string packer
 
 d-i user-setup/allow-password-weak boolean true
-d-i passwd/user-password password packer
-d-i passwd/user-password-again password packer
+d-i passwd/user-password password ${password}
+d-i passwd/user-password-again password ${password}
 d-i passwd/user-default-groups string audio cdrom video admin sudo
 
 # Apps
