@@ -1,10 +1,10 @@
-source "virtualbox-iso" "ubuntu-12" {
+source "virtualbox-iso" "ubuntu-18" {
 
     guest_os_type = "Ubuntu_64"
-    iso_url = "http://releases.ubuntu.com/12.04/ubuntu-12.04.5-server-amd64.iso"
+    iso_url = "http://cdimage.ubuntu.com/ubuntu/releases/18.04/release/ubuntu-18.04.6-server-amd64.iso"
 
     http_content = {
-        "/preseed.cfg" = templatefile("${path.root}/ubuntu-18/preseed.pkrtpl.hcl", 
+        "/preseed.cfg" = templatefile("${path.root}/ubuntu-12/preseed.pkrtpl.hcl", 
             { password = var.password}
         )
     }
@@ -22,7 +22,7 @@ source "virtualbox-iso" "ubuntu-12" {
         "<enter><wait>"
     ]
 
-    iso_checksum = "md5:769474248a3897f4865817446f9a4a53"
+    iso_checksum = "sha256:f5cbb8104348f0097a8e513b10173a07dbc6684595e331cb06f93f385d0aecf6"
 
     ssh_username = "packer"
     ssh_password = "${var.password}"
