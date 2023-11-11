@@ -1,5 +1,5 @@
 # Factory
-This repository hosts golden images for VMware's Workstation and Oracle's Virtualbox
+This repository hosts golden images for VMware's Workstation and Oracle's Virtualbox.
 
 # Images
 List of images configured
