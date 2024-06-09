@@ -61,8 +61,8 @@ d-i passwd/root-password password ${password}
 d-i passwd/root-password-again password ${password}
 
 # Set user password
-d-i passwd/user-fullname string packer
-d-i passwd/username string packer
+d-i passwd/user-fullname string ${username}
+d-i passwd/username string ${username}
 
 d-i user-setup/allow-password-weak boolean true
 d-i passwd/user-password password ${password}

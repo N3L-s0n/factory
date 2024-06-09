@@ -1,3 +1,5 @@
 packer_cache/
 output*/
 output-*
+.vagrant/
+*-output/

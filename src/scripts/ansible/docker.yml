@@ -47,3 +47,10 @@
           - docker-compose-plugin
         state: present
       become: true
+
+    - name: "Add vagrant user to docker group"
+      ansible.builtin.user:
+        user: vagrant
+        groups: docker
+        append: true
+      become: true

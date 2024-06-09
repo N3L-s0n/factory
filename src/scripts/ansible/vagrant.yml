@@ -1,0 +1,21 @@
+---
+- name: "Setup Vagrant requirements"
+  hosts: all
+  gather_facts: false
+
+  tasks:
+      - name: Create ssh directory for vagrant user
+        ansible.builtin.file:
+          path: "/home/vagrant/.ssh"
+          state: directory
+          owner: vagrant
+          group: vagrant
+          mode: '0700'
+
+      - name: Download Vagrant keys
+        ansible.builtin.get_url:
+          url: https://raw.githubusercontent.com/hashicorp/vagrant/main/keys/vagrant.pub
+          dest: "/home/vagrant/.ssh/authorized_keys"
+          mode: '0600'
+
+ 

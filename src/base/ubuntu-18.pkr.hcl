@@ -4,8 +4,10 @@ source "virtualbox-iso" "ubuntu-18" {
     iso_url = "http://cdimage.ubuntu.com/ubuntu/releases/18.04/release/ubuntu-18.04.6-server-amd64.iso"
 
     http_content = {
-        "/preseed.cfg" = templatefile("${path.root}/ubuntu-12/preseed.pkrtpl.hcl", 
-            { password = var.password}
+        "/preseed.cfg" = templatefile("${path.root}/ubuntu-12/preseed.pkrtpl.hcl", { 
+                password = var.password,
+                username = var.username
+            }
         )
     }
 
@@ -24,7 +26,7 @@ source "virtualbox-iso" "ubuntu-18" {
 
     iso_checksum = "sha256:f5cbb8104348f0097a8e513b10173a07dbc6684595e331cb06f93f385d0aecf6"
 
-    ssh_username = "packer"
+    ssh_username = "${var.username}"
     ssh_password = "${var.password}"
     ssh_timeout = "60m"
 

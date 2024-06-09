@@ -1,0 +1,74 @@
+---
+- name: "Setup Kubelet"
+  hosts: all
+  gather_facts: false
+  vars:
+    cridockerd_version: 0.3.14
+    cridockerd_distro: ubuntu-jammy
+  tasks:
+    # Get cri-dockerd from https://github.com/Mirantis/cri-dockerd/releases
+    - name: "Install cri-dockerd"
+      ansible.builtin.apt:
+        deb: https://github.com/Mirantis/cri-dockerd/releases/download/v{{ cridockerd_version }}/cri-dockerd_{{ cridockerd_version }}.3-0.{{ cridockerd_distro }}_amd64.deb
+      become: true
+
+    # Based on https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+    - name: "Install Kubernetes packages"
+      block:
+        - name: "Install dependencies"
+          ansible.builtin.apt:
+            pkg:
+              - apt-transport-https
+              - ca-certificates
+              - curl
+              - gpg
+            state: present
+            update_cache: yes
+
+        - name: "Make sure keyrings folder exists"
+          ansible.builtin.file:
+            path: /etc/apt/keyrings 
+            state: directory
+            mode: '0755'
+
+        - name: "Get old gpg asc key"
+          ansible.builtin.get_url:
+            url: https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key
+            dest: /etc/apt/keyrings/kubernetes.asc
+            mode: '644'
+
+        - name: "Add repository to APT sources"
+          ansible.builtin.lineinfile:
+            line: "deb [signed-by=/etc/apt/keyrings/kubernetes.asc] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /"
+            path: /etc/apt/sources.list.d/kubernetes.list
+            state: present
+            create: true
+
+        - name: "Install kubernetes"
+          ansible.builtin.apt:
+            pkg:
+              - kubelet
+              - kubeadm
+              - kubectl
+            update_cache: yes
+
+        - name: "Hold packages"
+          ansible.builtin.dpkg_selections:
+            name: "{{ item }}"
+            selection: hold
+          with_items:
+            - kubelet
+            - kubeadm
+            - kubectl
+
+        - name: "Enable kubelet"
+          ansible.builtin.service:
+            name: kubelet
+            enabled: yes
+            state: started
+
+        - name: "Pre-pull kube images"
+          ansible.builtin.command:
+            cmd: "kubeadm config images pull --cri-socket unix:///var/run/cri-dockerd.sock"
+
+      become: true
