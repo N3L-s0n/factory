@@ -5,7 +5,7 @@ packer {
             source  = "github.com/hashicorp/virtualbox"
         }
         vagrant = {
-            version = "~> 1"
+            version = ">= 1.1.5"
             source  = "github.com/hashicorp/vagrant"
         }
         ansible = {

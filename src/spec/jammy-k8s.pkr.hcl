@@ -1,19 +1,15 @@
-variable "cloud_token" {
-    type = string
-    sensitive = true
-}
+# Builds an ubuntu jammy machine with docker and kubernets on top
 
 locals {
-    provider = "virtualbox"
-    architecture =  "amd64"
-    version = "0.0.1"
+    ubuntu-jammy64-k8s-dir = "./ubuntu-jammy64-k8s-output"
 }
 
 source "vagrant" "ubuntu-jammy64-k8s" {
     communicator = "ssh"
     source_path  = "ubuntu/jammy64"
     provider     = "${local.provider}"
-    output_dir   = "./ubuntu-jammy64-kubernetes-output"
+    output_dir   = "${local.ubuntu-jammy64-k8s-dir}"
+    skip_add     = true
 }
 
 build {
@@ -35,21 +31,17 @@ build {
         playbook_file = "../scripts/ansible/kubernetes.yml"
     }
 
-    post-processor "shell-local" {
-        environment_vars = [
-            "BUILD_NAME=${source.name}",
-            "CLOUD_TOKEN=${var.cloud_token}"
-        ]
-        scripts = [
-            "./create-box.sh"
-        ] 
+    post-processor "vagrant-registry" {
+        client_id = "${ var.client_id }"
+        client_secret = "${ var.client_secret }"
+        box_tag = "${ var.registry_name }/${ source.name }"
+        version = "${ local.version }"
+        architecture = "${ local.architecture }"
+        keep_input_artifact = false   
     }
 
-    post-processor "vagrant-cloud" {
-        access_token = "${var.cloud_token}"
-        box_tag = "bynelson/${ source.name }"
-        version = "${local.version}"
-        architecture = "${local.architecture}"
-        keep_input_artifact = false   
+    # Cleanup
+    post-processor "shell-local" {
+        inline = ["rm -rf ${local.ubuntu-jammy64-k8s-dir}"]
     }
 }

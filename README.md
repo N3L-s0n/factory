@@ -14,6 +14,12 @@ Move to the src directory and execute the build passing a password variable to c
 
 > Note: Change the value of `${variable}` with your own values.
 
+**Running all spec builds**
+```sh
+cd src/spec
+packer build -var="client_id=${HCP_CLIENT_ID}" -var="client_secret=${HCP_CLIENT_SECRET}" .
+```
+
 **Running all builds**
 ```sh
 cd src
